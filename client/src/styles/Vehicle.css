@@ -11,12 +11,12 @@
 }
 
 /* Reuse the home grid look via the class applied in JSX (.home-grid) */
-.inventory-container-grid {
+ul.inventory-container-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 300px));
     gap: 50px;
     padding: 0;
-    place-items: center;
+    place-content: center;
 }
 
 /* Card matches home cards */
@@ -106,7 +106,7 @@
 .wishlist-btn {
   display: inline-block;
   padding: 8px 12px;
-  border-radius: 10px;
+  border-radius: var(--button-border-radius);
   border: 1px solid #111;
   background: transparent;
   color: #111;

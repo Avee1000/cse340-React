@@ -1,0 +1,42 @@
+.login-wrap {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px 16px;
+}
+
+.login-title {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.login-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.login-form label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+.login-form input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login-form button {
+  padding: 10px 14px;
+  border-radius: var(--button-border-radius);
+  border: 1px solid #111;
+  background: #fff;
+  cursor: pointer;
+  margin: 1.5rem 0;
+}
+
+.login-error {
+  color: #c00;
+  margin: 0;
+}

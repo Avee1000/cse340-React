@@ -38,6 +38,26 @@ invCont.buildByClassificationId = async function (req, res, next) {
   }
 }
 
+invCont.buildByInventoryId = async function (req, res, next) {
+  try {
+    const invId = req.params.invId
+    const data = await invModel.getInventoryById(invId)
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: "No vehicle found" });
+    }
+
+    const title = `${data[0].inv_make} ${data[0].inv_model}`
+    res.json({
+      title,
+      vehicle: data[0]
+    })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+}
+
 // /* ***************************
 //  *  Build management view
 //  * ************************** */
@@ -183,25 +203,6 @@ invCont.buildByClassificationId = async function (req, res, next) {
 // }
 
 
-
-// invCont.buildByInventoryId = async function (req, res, next) {
-//   const invId = req.params.invId
-//   const data = await invModel.getInventoryById(invId)
-//   const nav = await utilities.getNav()
-//   if (data.length > 0) {
-//     const itemHTML = await utilities.buildDetailView(data[0])
-//     res.render("./inventory/details", {
-//       title: `${data[0].inv_make} ${data[0].inv_model}`,
-//       nav,
-//       itemHTML,
-//     })
-//   } else {
-//     next({
-//       status: 404,
-//       message: "Vehicle not found"
-//     })
-//   }
-// }
 
 // /* ***************************
 //  *  Return Inventory by Classification As JSON

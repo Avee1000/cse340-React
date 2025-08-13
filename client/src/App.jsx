@@ -42,6 +42,8 @@ import Footer from "./components/Footer.jsx";
 import Home from "./pages/Home.jsx";
 import Inventory from "./pages/Inventory.jsx";
 import Vehicle from "./pages/Vehicle.jsx";
+import VehicleDetail from "./pages/Vehicle-detail.jsx"
+import Login from "./pages/Login.jsx";
 
 export default function App() {
   return (
@@ -51,6 +53,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/inv/type/:classificationId" element={<Vehicle />} />
+        <Route path="/inv/detail/:invId" element={<VehicleDetail />} />
+        <Route path="/login" element={<Login />} />
         {/* add other routes later */}
       </Routes>
       <Footer />

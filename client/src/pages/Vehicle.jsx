@@ -15,6 +15,7 @@ export default function Vehicle() {
         axios.get(`http://localhost:5500/inv/type/${classificationId}`)
             .then((res) => {
                 setItems(res.data)
+                console.log(res.data)
             })
             .catch(err => {
                 setError(err?.message || "Failed to load classifications.");

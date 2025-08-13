@@ -1,6 +1,6 @@
 // client/src/pages/Home.jsx
 import { useEffect, useState } from "react";
-import "../styles/Home.css"; // <-- make sure this path exists
+import "../styles/Index.css"; // <-- make sure this path exists
 
 export default function Home() {
   const [featured, setFeatured] = useState([]);

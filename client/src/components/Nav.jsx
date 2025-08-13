@@ -7,7 +7,7 @@ export default function Nav() {
       <nav style={styles.nav}>
         <Link to="/" style={styles.link}>Home</Link>
         <Link to="/inventory" style={styles.link}>Inventory</Link>
-        <Link to="/account" style={styles.link}>My Account</Link>
+        <Link to="/login" style={styles.link}>My Account</Link>
       </nav>
     </header>
   );
