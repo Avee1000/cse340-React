@@ -41,6 +41,7 @@ import Nav from "./components/nav.jsx";
 import Footer from "./components/Footer.jsx";
 import Home from "./pages/Home.jsx";
 import Inventory from "./pages/Inventory.jsx";
+import Vehicle from "./pages/Vehicle.jsx";
 
 export default function App() {
   return (
@@ -49,6 +50,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/inventory" element={<Inventory />} />
+        <Route path="/inv/type/:classificationId" element={<Vehicle />} />
         {/* add other routes later */}
       </Routes>
       <Footer />

@@ -8,6 +8,36 @@ invCont.getClassifications = async function (req, res, next) {
   res.json(classifications.rows)
 }
 
+/* ***************************
+ *  Build inventory by classification view
+ * ************************** */
+invCont.buildByClassificationId = async function (req, res, next) {
+  try {
+    console.log("Request Params:", req.params);
+    const classification_id = req.params.classificationId;
+
+    // Fetch inventory
+    const data = await invModel.getInventoryByClassificationId(classification_id);
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: "No vehicles found" });
+    }
+
+    // Extract classification name from first row
+    const className = data[0].classification_name;
+    const title = className + " Inventory"
+
+    // Send JSON instead of rendering EJS
+    res.json({
+      title, // e.g. "SUV"
+      vehicles: data // full array from database
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+}
+
 // /* ***************************
 //  *  Build management view
 //  * ************************** */
@@ -152,22 +182,7 @@ invCont.getClassifications = async function (req, res, next) {
 //   }
 // }
 
-// /* ***************************
-//  *  Build inventory by classification view
-//  * ************************** */
-// invCont.buildByClassificationId = async function (req, res, next) {
-//   console.log('Request Params:', req.params)
-//   const classification_id = req.params.classificationId
-//   const data = await invModel.getInventoryByClassificationId(classification_id)
-//   const grid = await utilities.buildClassificationGrid(data)
-//   let nav = await utilities.getNav()
-//   const className = data[0].classification_name
-//   res.render("./inventory/classification", {
-//     title: className + " vehicles",
-//     nav,
-//     grid,
-//   })
-// }
+
 
 // invCont.buildByInventoryId = async function (req, res, next) {
 //   const invId = req.params.invId

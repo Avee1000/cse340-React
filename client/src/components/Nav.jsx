@@ -14,7 +14,7 @@ export default function Nav() {
 }
 
 const styles = {
-  header: { display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 20px", borderBottom:"1px solid #eee", position:"sticky", top:0, background:"#fff", zIndex:10 },
+  header: { display:"flex", alignItems:"center", fontFamily: "Roboto", justifyContent:"space-between", padding:"14px 20px", borderBottom:"1px solid #eee", position:"sticky", top:0, background:"#fff", zIndex:10 },
   brand: { fontWeight:700, fontSize:"1.1rem" },
   brandLink: { textDecoration:"none", color:"#111" },
   nav: { display:"flex", gap:"14px" },
