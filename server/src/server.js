@@ -12,22 +12,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // === Dev CORS (React dev runs at 5173)
-const DEV_ORIGINS = ["http://localhost:5173"];
 app.use(
-  cors({
-    origin: (origin, cb) => cb(null, !origin || DEV_ORIGINS.includes(origin)),
-    credentials: true,
-  })
+  cors()
 );
 
 // === Your routes (switch to API paths)
 const inventoryRoute = require("./routes/inventoryRoute"); // update these files to send JSON
 const accountRoute = require("./routes/accountRoute");     // example if you have it
 // mount under /api/*
-app.use("/api/inv", inventoryRoute);
-app.use("/api/account", accountRoute);
+app.use("/inv", inventoryRoute);
+app.use("/account", accountRoute);
 
-// Health check
+// Health checkg
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
 // === 404 (API style)
