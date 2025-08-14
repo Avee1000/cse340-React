@@ -3,17 +3,32 @@ const utilities = require("../utilities/")
 
 const invCont = {}
 
+invCont.getAllInventory = async function (req, res, next) {
+  const inventory = await invModel.getAllInventory()
+  res.json(inventory.rows)
+}
 invCont.getClassifications = async function (req, res, next) {
   const classifications = await invModel.getClassifications()
   res.json(classifications.rows)
 }
+
+invCont.getInventoryByClassificationName = async function (req, res, next) {
+  try {
+    const classification_name = req.params.classificationName;
+    const newName = classification_name.charAt(0).toUpperCase() + classification_name.slice(1).toLowerCase()
+    console.log(newName)
+    const inventory = await invModel.getInventoryByClassificationName(newName);
+    res.json(inventory); 
+  } catch (err) {
+    next(err); 
+  }
+};
 
 /* ***************************
  *  Build inventory by classification view
  * ************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
   try {
-    console.log("Request Params:", req.params);
     const classification_id = req.params.classificationId;
 
     // Fetch inventory
@@ -23,13 +38,8 @@ invCont.buildByClassificationId = async function (req, res, next) {
       return res.status(404).json({ error: "No vehicles found" });
     }
 
-    // Extract classification name from first row
-    const className = data[0].classification_name;
-    const title = className + " Inventory"
-
     // Send JSON instead of rendering EJS
     res.json({
-      title, // e.g. "SUV"
       vehicles: data // full array from database
     });
   } catch (error) {

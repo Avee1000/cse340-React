@@ -6,7 +6,7 @@ export default function Nav() {
       <div style={styles.brand}><Link to="/" style={styles.brandLink}>CSE340 Garage</Link></div>
       <nav style={styles.nav}>
         <Link to="/" style={styles.link}>Home</Link>
-        <Link to="/inventory" style={styles.link}>Inventory</Link>
+        <Link to="/inventory" prefetch="intent" style={styles.link}>Inventory</Link>
         <Link to="/login" style={styles.link}>My Account</Link>
       </nav>
     </header>

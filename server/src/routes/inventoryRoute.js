@@ -6,6 +6,10 @@ const errorController = require("../controllers/errorController")
 const utilities = require("../utilities/")
 const managementValidate = require("../utilities/management-validation")
 
+router.get("/by-classification/:classificationName", invController.getInventoryByClassificationName)
+
+router.get("/allinventory", invController.getAllInventory)
+
 router.get("/", invController.getClassifications)
 
 // Route to build inventory by classification view

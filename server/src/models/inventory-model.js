@@ -8,6 +8,10 @@ async function getClassifications(){
   return await pool.query("SELECT * FROM public.classification ORDER BY classification_name")
 }
 
+async function getAllInventory(){
+  return await pool.query("SELECT * FROM public.inventory")
+}
+
 /* ***************************
  *  Insert into classification data
  * ************************** */
@@ -103,6 +107,25 @@ async function getInventoryByClassificationId(classification_id) {
     console.error("getclassificationsbyid error " + error)
   }
 }
+
+async function getInventoryByClassificationName(classification_name) {
+  try {
+    const data = await pool.query(
+      `SELECT i.*, 
+              UPPER(LEFT(c.classification_name, 1)) 
+              || LOWER(SUBSTRING(c.classification_name FROM 2)) AS classification_name
+       FROM public.inventory AS i
+       JOIN public.classification AS c 
+       ON i.classification_id = c.classification_id 
+       WHERE c.classification_name = $1`,
+      [classification_name]
+    );
+    return data.rows;
+  } catch (error) {
+    console.error("Error getting inventory by classification name:", error);
+  }
+}
+
 
 async function getInventoryById(inv_id) {
   try {
@@ -242,6 +265,8 @@ async function deleteFromWishlist(account_id, inv_id) {
 // testGetInventory();
 
 module.exports = {
+  getAllInventory,
+  getInventoryByClassificationName,
   getClassifications,
   getInventoryByClassificationId,
   getInventoryById,

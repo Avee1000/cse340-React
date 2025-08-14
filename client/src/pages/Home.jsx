@@ -1,27 +1,48 @@
 // client/src/pages/Home.jsx
-import { useEffect, useState } from "react";
-import "../styles/Index.css"; // <-- make sure this path exists
+import { useEffect, useMemo, useState } from "react";
+import "../styles/Index.css";
+
+// Optional: set API base in .env as VITE_API_BASE_URL=http://localhost:3000
+const API = import.meta.env.VITE_API_BASE_URL || "";
 
 export default function Home() {
-  const [featured, setFeatured] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [classifications, setClassifications] = useState([]); // [{classification_id, classification_name}]
+  const [featured, setFeatured] = useState([]);               // [{inv_id, inv_year, inv_make, inv_model, inv_price, inv_thumbnail}]
+  const [latest, setLatest] = useState([]);                   // same shape as featured
+  const [err, setErr] = useState(null);
 
   useEffect(() => {
     let ignore = false;
     (async () => {
       try {
-        const res = await fetch("/api/inv/featured"); // make this endpoint later
-        if (!res.ok) throw new Error("no featured yet");
-        const data = await res.json();
-        if (!ignore) setFeatured(Array.isArray(data) ? data : []);
-      } catch {
-        if (!ignore) {
-          setFeatured([
-            { inv_id: 1, inv_year: 2020, inv_make: "Ford",   inv_model: "Focus",   price: 12000 },
-            { inv_id: 2, inv_year: 2019, inv_make: "Toyota", inv_model: "Corolla", price: 13500 },
-            { inv_id: 3, inv_year: 2021, inv_make: "Honda",  inv_model: "Civic",   price: 16000 },
-          ]);
+        setLoading(true);
+        setErr(null);
+
+        // Fetch everything in parallel
+        const [cRes, fRes, lRes] = await Promise.all([
+          fetch(`${API}/api/classifications`),
+          fetch(`${API}/api/inv/featured`),
+          fetch(`${API}/api/inv/latest?limit=8`),
+        ]);
+
+        if (!cRes.ok || !fRes.ok || !lRes.ok) {
+          throw new Error("One or more API calls failed");
         }
+
+        const [cData, fData, lData] = await Promise.all([
+          cRes.json(),
+          fRes.json(),
+          lRes.json(),
+        ]);
+
+        if (!ignore) {
+          setClassifications(Array.isArray(cData) ? cData : []);
+          setFeatured(Array.isArray(fData) ? fData : []);
+          setLatest(Array.isArray(lData) ? lData : []);
+        }
+      } catch (e) {
+        if (!ignore) setErr(e?.message || "Failed to load home data");
       } finally {
         if (!ignore) setLoading(false);
       }
@@ -29,38 +50,194 @@ export default function Home() {
     return () => { ignore = true; };
   }, []);
 
+  // Small helper to format money
+  const money = useMemo(
+    () => (n) => (typeof n === "number" ? `$${n.toLocaleString()}` : ""),
+    []
+  );
+
   return (
     <main className="home-wrap">
       {/* Hero */}
       <section className="home-hero">
         <div className="home-hero-copy">
           <h1 className="home-title">Find your next ride</h1>
-          <p className="home-subtitle">Browse inventory, save favorites, and manage your account.</p>
-          <a href="/inventory" className="home-cta">Browse Inventory</a>
+          <p className="home-subtitle">
+            Browse inventory, save favorites, and manage your account.
+          </p>
+          <div className="home-cta-row">
+            <a href="/inventory" className="home-cta">Browse Inventory</a>
+            <a href="/account/login" className="home-cta alt">Sign in</a>
+          </div>
         </div>
         <div className="home-hero-img" aria-hidden />
       </section>
 
-      {/* Featured */}
-      <section>
-        <h2 className="home-h2">Featured</h2>
+      {/* Quick categories (built from DB classifications) */}
+      <section className="home-section">
+        <div className="home-section-head">
+          <h2 className="home-h2">Shop by category</h2>
+        </div>
+
         {loading ? (
-          <p>Loading...</p>
+          <p>Loading categories…</p>
+        ) : classifications.length === 0 ? (
+          <p className="muted">No categories yet.</p>
+        ) : (
+          <nav className="pill-nav" aria-label="Vehicle categories">
+            {classifications.map((c) => (
+              <a
+                key={c.classification_id}
+                className="pill"
+                href={`/inventory/classification/${c.classification_id}`}
+              >
+                {c.classification_name}
+              </a>
+            ))}
+          </nav>
+        )}
+      </section>
+
+      {/* Featured from DB */}
+      <section className="home-section">
+        <div className="home-section-head">
+          <h2 className="home-h2">Featured</h2>
+          <a className="link" href="/inventory">See all</a>
+        </div>
+
+        {loading ? (
+          <p>Loading featured…</p>
+        ) : err ? (
+          <p className="error">{err}</p>
+        ) : featured.length === 0 ? (
+          <p className="muted">No featured vehicles yet.</p>
         ) : (
           <div className="home-grid">
             {featured.map((v) => (
-              <a key={v.inv_id} href={`/inventory/${v.inv_id}`} className="car-card">
-                <div className="car-thumb" aria-hidden />
+              <a key={v.inv_id} href={`/inventory/${v.inv_id}`} className="car-card [border-radius:14px_0_14px_0]">
+                {/* thumbnail */}
+                {v.inv_thumbnail ? (
+                  <img
+                    className="car-thumb"
+                    src={v.inv_thumbnail}
+                    alt={`Image of ${v.inv_make} ${v.inv_model}`}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="car-thumb" aria-hidden />
+                )}
+
+                {/* body */}
                 <div className="car-card-body">
-                  <div className="car-title">
+                  <div className="car-title truncate-1">
                     {v.inv_year} {v.inv_make} {v.inv_model}
                   </div>
-                  {v.price ? <div className="car-price">${Number(v.price).toLocaleString()}</div> : null}
+                  {v.inv_price != null && (
+                    <div className="car-price">{money(Number(v.inv_price))}</div>
+                  )}
                 </div>
               </a>
             ))}
           </div>
         )}
+      </section>
+
+      {/* Latest arrivals from DB */}
+      <section className="home-section">
+        <div className="home-section-head">
+          <h2 className="home-h2">Latest arrivals</h2>
+          <a className="link" href="/inventory?sort=newest">New in</a>
+        </div>
+
+        {loading ? (
+          <p>Loading latest…</p>
+        ) : latest.length === 0 ? (
+          <p className="muted">No recent arrivals.</p>
+        ) : (
+          <div className="home-grid">
+            {latest.map((v) => (
+              <a key={v.inv_id} href={`/inventory/${v.inv_id}`} className="car-card">
+                {v.inv_thumbnail ? (
+                  <img
+                    className="car-thumb"
+                    src={v.inv_thumbnail}
+                    alt={`Image of ${v.inv_make} ${v.inv_model}`}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="car-thumb" aria-hidden />
+                )}
+                <div className="car-card-body">
+                  <div className="car-title truncate-1">
+                    {v.inv_year} {v.inv_make} {v.inv_model}
+                  </div>
+                  {v.inv_price != null && (
+                    <div className="car-price">{money(Number(v.inv_price))}</div>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Value props / trust (static copy; data is still from DB for vehicles) */}
+      <section
+        className="container carousel slide my-2 mb-4"
+        data-bs-ride="carousel"
+        data-bs-interval="2000"
+        id="homeCarousel"
+      >
+        <div className="carousel-inner border border-1 rounded-3">
+          <div className="carousel-item active">
+            <div className="stat-card text-center py-4">
+              <div className="stat-k display-6">✅</div>
+              <div className="stat-t">Verified listings</div>
+            </div>
+          </div>
+
+          <div className="carousel-item">
+            <div className="stat-card text-center py-4">
+              <div className="stat-k display-6">💳</div>
+              <div className="stat-t">Flexible payment</div>
+            </div>
+          </div>
+
+          <div className="carousel-item">
+            <div className="stat-card text-center py-4">
+              <div className="stat-k display-6">🛠️</div>
+              <div className="stat-t">Inspected vehicles</div>
+            </div>
+          </div>
+
+          <div className="carousel-item">
+            <div className="stat-card text-center py-4">
+              <div className="stat-k display-6">🛡️</div>
+              <div className="stat-t">Secure account</div>
+            </div>
+          </div>
+        </div>
+
+                {/* prev/next */}
+        <button className="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
+          <span className="carousel-control-prev-icon btn bg-dark" aria-hidden="true"></span>
+          <span className="visually-hidden">Previous</span>
+        </button>
+        <button className="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
+          <span className="carousel-control-next-icon btn bg-dark" aria-hidden="true"></span>
+          <span className="visually-hidden">Next</span>
+        </button>
+      </section>
+
+      {/* Final CTA */}
+      <section className="home-section">
+        <div className="cta-banner">
+          <div>
+            <h3 className="home-h2">Ready to explore more?</h3>
+            <p className="home-subtitle">Filter by category, save your wishlist, and compare easily.</p>
+          </div>
+          <a href="/inventory" className="home-cta">Browse Inventory</a>
+        </div>
       </section>
     </main>
   );
