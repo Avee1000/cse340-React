@@ -26,9 +26,6 @@ importers:
       react-router-dom:
         specifier: ^7.8.0
         version: 7.8.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      vite:
-        specifier: ^7.1.2
-        version: 7.1.2
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
@@ -63,6 +60,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.11
         version: 4.1.11
+      vite:
+        specifier: ^7.1.2
+        version: 7.1.2
 
 packages:
 
