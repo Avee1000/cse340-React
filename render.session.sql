@@ -26,4 +26,4 @@ SELECT* FROM wishlist
 SELECT * FROM public.inventory AS i 
        JOIN public.classification AS c 
        ON i.classification_id = c.classification_id 
-       WHERE c.classification_name = 'Sport'
+       WHERE c.classification_id = 2

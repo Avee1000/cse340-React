@@ -2,7 +2,9 @@
   border-radius: var(--button-border-radius) !important;
 }
 
-
+.row select {
+  font-size: 15px !important;
+}
 
 /* Inherit the same font as main/home */
 #inv-display * {
@@ -80,6 +82,7 @@ div.inventory-container-grid {
 }
 
 .car-title a {
+    font-size: 1.5rem;
     display:inline-block;
     width: 200px;
     color: inherit;

@@ -9,7 +9,10 @@ async function getClassifications(){
 }
 
 async function getAllInventory(){
-  return await pool.query("SELECT * FROM public.inventory")
+  return await pool.query(`SELECT *
+FROM public.inventory AS i
+JOIN public.classification AS c
+ON i.classification_id = c.classification_id;`)
 }
 
 /* ***************************

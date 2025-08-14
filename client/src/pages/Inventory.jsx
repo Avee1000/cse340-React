@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import sort from "../util/function"
+import Loading from "../components/loading";
 // You can keep your file for tiny overrides if needed
 import "../styles/Inventory.css";
 
@@ -17,17 +18,11 @@ export default function Inventory() {
   useEffect(() => {
     (async () => {
       try {
-        let url = "http://localhost:5500/inv/by-classification";
-        if (filterClassification !== "all") {
-          url += `?name=${encodeURIComponent(filterClassification)}`;
-        }
-        const [itemsRes, classesRes, dataRes] = await Promise.all([
+
+        const [itemsRes, classesRes] = await Promise.all([
           axios.get("http://localhost:5500/inv/allinventory"),
           axios.get("http://localhost:5500/inv"),
-          axios.get(url),
         ]);
-        setItems(itemsRes.data);
-        setClassifications(classesRes.data);
 
         const itemsData = Array.isArray(itemsRes.data)
           ? itemsRes.data
@@ -39,6 +34,8 @@ export default function Inventory() {
 
         setItems(itemsData);
         setClassifications(classesData);
+
+        console.log(itemsRes.data)
 
       } catch (err) {
         setError(err?.message || "Failed to load inventory.");
@@ -53,7 +50,7 @@ export default function Inventory() {
   }, []);
 
   // Distinct list of makes for the filter (teaches useMemo)
-  const classifications = useMemo(() => {
+  const classificationList = useMemo(() => {
     const s = new Set(classification.map(v => v.classification_name).filter(Boolean));
     return ["all", ...Array.from(s)];
   }, [classification]);
@@ -63,26 +60,17 @@ export default function Inventory() {
     let list = [...items];
 
     if (filterClassification !== "all") {
-      list = list.filter((v) => v.inv_classification === filterClassification);
+      list = list.filter((v) => v.classification_name === filterClassification);
     }
 
     sort(list, sortedBy);
-    
+
     return list;
   }, [items, classification, filterClassification, sortedBy]);
 
   if (loading) {
     // Bootstrap spinner pattern
-    return (
-      <main className="container py-5">
-        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 240 }}>
-          <div className="text-center">
-            <div className="spinner-border" role="status" aria-label="Loading" />
-            <p className="mt-3 mb-0">Loading inventory…</p>
-          </div>
-        </div>
-      </main>
-    );
+    return < Loading text="Loading Inventory..." />
   }
 
   if (error) {
@@ -99,12 +87,14 @@ export default function Inventory() {
   return (
     <main id="vehicleMainContainer" className="container py-4">
       {/* Page header */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-3">
+      <div className="d-flex flex-wrap justify-content-between align-items-center">
         <h1 className="h3 mb-2 mb-md-0">Inventory</h1>
         <div className="text-secondary small">
           {visible.length} result{visible.length !== 1 ? "s" : ""}
         </div>
       </div>
+
+      <hr className="d-block w-100 mx-auto my-5 border-1" />
 
       {/* Controls row (Bootstrap forms) */}
       <div className="row g-3 mb-4">
@@ -129,12 +119,12 @@ export default function Inventory() {
             id="vehicleListContainer"
             className="form-select"
             value={filterClassification}
-            onChange={(e) => setClassifications(e.target.value)}
+            onChange={(e) => { setFilterClassification(e.target.value); console.log(e.target.value); }}
           >
-            {classifications.map(m => (
+            {classificationList.map(m => (
               <option key={m} value={m}>{m === "all" ? "All Classifications" : m}</option>
             ))}
-            
+
           </select>
         </div>
 
