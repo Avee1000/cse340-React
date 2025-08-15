@@ -1,7 +1,7 @@
 // client/src/pages/Inventory.jsx
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 import sort from "../util/function"
 import Loading from "../components/loading";
 // You can keep your file for tiny overrides if needed
@@ -15,18 +15,17 @@ export default function Inventory() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const API = import.meta.env.VITE_API_URL;
 
 
   useEffect(() => {
     (async () => {
       try {
-        const url = `${API}/inv/allinventory`;
-        const url2 = `${API}/inv`;
+        const url = `/inv/allinventory`;
+        const url2 = `/inv`;
 
         const [itemsRes, classesRes] = await Promise.all([
-          axios.get(url),
-          axios.get(url2),
+          api.get(url),
+          api.get(url2),
         ]);
 
       // Extract data — axios puts it in res.data
