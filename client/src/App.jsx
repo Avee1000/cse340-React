@@ -37,7 +37,7 @@
 
 // client/src/App.jsx
 import { Routes, Route } from "react-router-dom";
-import Nav from "./components/nav.jsx";
+import Nav from "./components/Nav.jsx";
 import Footer from "./components/Footer.jsx";
 import Home from "./pages/Home.jsx";
 import Inventory from "./pages/Inventory.jsx";
