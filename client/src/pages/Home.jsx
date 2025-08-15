@@ -77,7 +77,7 @@ export default function Home() {
           <Carousel className="w-100" controls={false} indicators={false} interval={4000} pause={false} >
             {heroData.map((hero) => {
               return (
-                <Carousel.Item>
+                <Carousel.Item key={hero.id}>
                   <img className="carouselImage" src={hero.image} alt={"Slide" + hero.id} />
                 </Carousel.Item>
               )
@@ -263,7 +263,5 @@ export default function Home() {
         </section>
       </main>
     </div>
-
-
   );
 }
