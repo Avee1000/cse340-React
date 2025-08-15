@@ -15,27 +15,34 @@ export default function Inventory() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const API = import.meta.env.VITE_API_URL;
+
+
   useEffect(() => {
     (async () => {
       try {
+        const url = `${API}/inv/allinventory`;
+        const url2 = `${API}/inv`;
 
         const [itemsRes, classesRes] = await Promise.all([
-          axios.get("http://localhost:5500/inv/allinventory"),
-          axios.get("http://localhost:5500/inv"),
+          axios.get(url),
+          axios.get(url2),
         ]);
 
-        const itemsData = Array.isArray(itemsRes.data)
-          ? itemsRes.data
-          : itemsRes.data?.rows ?? [];
+      // Extract data — axios puts it in res.data
+      const itemsData = Array.isArray(itemsRes.data)
+        ? itemsRes.data
+        : itemsRes.data?.rows ?? [];
 
-        const classesData = Array.isArray(classesRes.data)
-          ? classesRes.data
-          : classesRes.data?.rows ?? [];
+      const classesData = Array.isArray(classesRes.data)
+        ? classesRes.data
+        : classesRes.data?.rows ?? [];
 
-        setItems(itemsData);
-        setClassifications(classesData);
+      setItems(itemsData);
+      setClassifications(classesData);
 
-        console.log(itemsRes.data)
+      console.log("Items:", itemsData);
+      console.log("Classifications:", classesData);
 
       } catch (err) {
         setError(err?.message || "Failed to load inventory.");
