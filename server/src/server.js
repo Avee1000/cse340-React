@@ -42,13 +42,13 @@ app.use((err, req, res, _next) => {
 });
 
 // === Serve React in production
+app.get("/api/health", (_req, res) => res.json({ ok: true }));
+// === Serve React in production
 if (process.env.NODE_ENV === "production") {
   const clientDist = path.join(__dirname, "..", "..", "client", "dist");
   app.use(express.static(clientDist));
   app.get("*", (_req, res) => res.sendFile(path.join(clientDist, "index.html")));
 }
-
-
 // === Boot
 const port = process.env.PORT || 3000;
 const host = process.env.HOST || "localhost";

@@ -1,15 +1,29 @@
-// client/src/pages/Home.jsx
 import { useEffect, useMemo, useState } from "react";
+import Carousel from 'react-bootstrap/Carousel'
 import "../styles/Index.css";
 
-// Optional: set API base in .env as VITE_API_BASE_URL=http://localhost:3000
 const API = import.meta.env.VITE_API_BASE_URL || "";
+
+let heroData = [
+  {
+    id: 1,
+    image: "/images/site/hero1.jpg",
+  },
+  {
+    id: 2,
+    image: "/images/site/hero2.jpg",
+  },
+  {
+    id: 3,
+    image: "/images/site/hero3.jpg",
+  }
+]
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const [classifications, setClassifications] = useState([]); // [{classification_id, classification_name}]
-  const [featured, setFeatured] = useState([]);               // [{inv_id, inv_year, inv_make, inv_model, inv_price, inv_thumbnail}]
-  const [latest, setLatest] = useState([]);                   // same shape as featured
+  const [classifications, setClassifications] = useState([]);
+  const [featured, setFeatured] = useState([]);
+  const [latest, setLatest] = useState([]);
   const [err, setErr] = useState(null);
 
   useEffect(() => {
@@ -57,132 +71,149 @@ export default function Home() {
   );
 
   return (
-    <main className="home-wrap">
-      {/* Hero */}
-      <section className="home-hero">
-        <div className="home-hero-copy">
-          <h1 className="home-title">Find your next ride</h1>
-          <p className="home-subtitle">
-            Browse inventory, save favorites, and manage your account.
-          </p>
-          <div className="home-cta-row">
-            <a href="/inventory" className="home-cta">Browse Inventory</a>
-            <a href="/account/login" className="home-cta alt">Sign in</a>
+    <div id="homeContainer">
+      <div id="homeHeroContainer" className="position-relative" >
+        <div id="homeHeroCarouselContainer" className="w-100">
+          <Carousel className="w-100" controls={false} indicators={false} interval={4000} pause={false} >
+            {heroData.map((hero) => {
+              return (
+                <Carousel.Item>
+                  <img className="carouselImage" src={hero.image} alt={"Slide" + hero.id} />
+                </Carousel.Item>
+              )
+            })}
+          </Carousel>
+        </div>
+
+        <div id="homeHeroTextContainer" className="position-absolute top-50 start-0 w-100">
+          <section className="home-hero px-5 py-3 d-flex align-items-center justify-content-center">
+            <div className="home-hero-copy">
+              <h1 className="home-title text-center">Find your next ride</h1>
+              <p className="home-subtitle text-center">
+                Browse inventory, save favorites, and manage your account.
+              </p>
+              <div className="home-cta-row d-flex gap-3 justify-content-center mt-4">
+                <a href="/inventory" className="home-cta">Browse Inventory</a>
+                <a href="/account/login" className="home-cta alt">Sign in</a>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+
+      <main className="home-wrap">
+
+        {/* Quick categories (built from DB classifications) */}
+        <section className="home-section">
+          <div className="home-section-head">
+            <h2 className="home-h2">Shop by category</h2>
           </div>
-        </div>
-        <div className="home-hero-img" aria-hidden />
-      </section>
 
-      {/* Quick categories (built from DB classifications) */}
-      <section className="home-section">
-        <div className="home-section-head">
-          <h2 className="home-h2">Shop by category</h2>
-        </div>
+          {loading ? (
+            <p>Loading categories…</p>
+          ) : classifications.length === 0 ? (
+            <p className="muted">No categories yet.</p>
+          ) : (
+            <nav className="pill-nav" aria-label="Vehicle categories">
+              {classifications.map((c) => (
+                <a
+                  key={c.classification_id}
+                  className="pill"
+                  href={`/inventory/classification/${c.classification_id}`}
+                >
+                  {c.classification_name}
+                </a>
+              ))}
+            </nav>
+          )}
+        </section>
 
-        {loading ? (
-          <p>Loading categories…</p>
-        ) : classifications.length === 0 ? (
-          <p className="muted">No categories yet.</p>
-        ) : (
-          <nav className="pill-nav" aria-label="Vehicle categories">
-            {classifications.map((c) => (
-              <a
-                key={c.classification_id}
-                className="pill"
-                href={`/inventory/classification/${c.classification_id}`}
-              >
-                {c.classification_name}
-              </a>
-            ))}
-          </nav>
-        )}
-      </section>
+        {/* Featured from DB */}
+        <section className="home-section">
+          <div className="home-section-head">
+            <h2 className="home-h2">Featured</h2>
+            <a className="link" href="/inventory">See all</a>
+          </div>
 
-      {/* Featured from DB */}
-      <section className="home-section">
-        <div className="home-section-head">
-          <h2 className="home-h2">Featured</h2>
-          <a className="link" href="/inventory">See all</a>
-        </div>
-
-        {loading ? (
-          <p>Loading featured…</p>
-        ) : err ? (
-          <p className="error">{err}</p>
-        ) : featured.length === 0 ? (
-          <p className="muted">No featured vehicles yet.</p>
-        ) : (
-          <div className="home-grid">
-            {featured.map((v) => (
-              <a key={v.inv_id} href={`/inventory/${v.inv_id}`} className="car-card [border-radius:14px_0_14px_0]">
-                {/* thumbnail */}
-                {v.inv_thumbnail ? (
-                  <img
-                    className="car-thumb"
-                    src={v.inv_thumbnail}
-                    alt={`Image of ${v.inv_make} ${v.inv_model}`}
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="car-thumb" aria-hidden />
-                )}
-
-                {/* body */}
-                <div className="car-card-body">
-                  <div className="car-title truncate-1">
-                    {v.inv_year} {v.inv_make} {v.inv_model}
-                  </div>
-                  {v.inv_price != null && (
-                    <div className="car-price">{money(Number(v.inv_price))}</div>
+          {loading ? (
+            <p>Loading featured…</p>
+          ) : err ? (
+            <p className="error">{err}</p>
+          ) : featured.length === 0 ? (
+            <p className="muted">No featured vehicles yet.</p>
+          ) : (
+            <div className="home-grid">
+              {featured.map((v) => (
+                <a key={v.inv_id} href={`/inventory/${v.inv_id}`} className="car-card [border-radius:14px_0_14px_0]">
+                  {/* thumbnail */}
+                  {v.inv_thumbnail ? (
+                    <img
+                      className="car-thumb"
+                      src={v.inv_thumbnail}
+                      alt={`Image of ${v.inv_make} ${v.inv_model}`}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="car-thumb" aria-hidden />
                   )}
-                </div>
-              </a>
-            ))}
-          </div>
-        )}
-      </section>
 
-      {/* Latest arrivals from DB */}
-      <section className="home-section">
-        <div className="home-section-head">
-          <h2 className="home-h2">Latest arrivals</h2>
-          <a className="link" href="/inventory?sort=newest">New in</a>
-        </div>
-
-        {loading ? (
-          <p>Loading latest…</p>
-        ) : latest.length === 0 ? (
-          <p className="muted">No recent arrivals.</p>
-        ) : (
-          <div className="home-grid">
-            {latest.map((v) => (
-              <a key={v.inv_id} href={`/inventory/${v.inv_id}`} className="car-card">
-                {v.inv_thumbnail ? (
-                  <img
-                    className="car-thumb"
-                    src={v.inv_thumbnail}
-                    alt={`Image of ${v.inv_make} ${v.inv_model}`}
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="car-thumb" aria-hidden />
-                )}
-                <div className="car-card-body">
-                  <div className="car-title truncate-1">
-                    {v.inv_year} {v.inv_make} {v.inv_model}
+                  {/* body */}
+                  <div className="car-card-body">
+                    <div className="car-title truncate-1">
+                      {v.inv_year} {v.inv_make} {v.inv_model}
+                    </div>
+                    {v.inv_price != null && (
+                      <div className="car-price">{money(Number(v.inv_price))}</div>
+                    )}
                   </div>
-                  {v.inv_price != null && (
-                    <div className="car-price">{money(Number(v.inv_price))}</div>
-                  )}
-                </div>
-              </a>
-            ))}
-          </div>
-        )}
-      </section>
+                </a>
+              ))}
+            </div>
+          )}
+        </section>
 
-      {/* Value props / trust (static copy; data is still from DB for vehicles) */}
-      <section
+        {/* Latest arrivals from DB */}
+        <section className="home-section">
+          <div className="home-section-head">
+            <h2 className="home-h2">Latest arrivals</h2>
+            <a className="link" href="/inventory?sort=newest">New in</a>
+          </div>
+
+          {loading ? (
+            <p>Loading latest…</p>
+          ) : latest.length === 0 ? (
+            <p className="muted">No recent arrivals.</p>
+          ) : (
+            <div className="home-grid">
+              {latest.map((v) => (
+                <a key={v.inv_id} href={`/inventory/${v.inv_id}`} className="car-card">
+                  {v.inv_thumbnail ? (
+                    <img
+                      className="car-thumb"
+                      src={v.inv_thumbnail}
+                      alt={`Image of ${v.inv_make} ${v.inv_model}`}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="car-thumb" aria-hidden />
+                  )}
+                  <div className="car-card-body">
+                    <div className="car-title truncate-1">
+                      {v.inv_year} {v.inv_make} {v.inv_model}
+                    </div>
+                    {v.inv_price != null && (
+                      <div className="car-price">{money(Number(v.inv_price))}</div>
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Value props / trust (static copy; data is still from DB for vehicles) */}
+        {/* <section
         className="container carousel slide my-2 mb-4"
         data-bs-ride="carousel"
         data-bs-interval="2000"
@@ -217,18 +248,22 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Final CTA */}
-      <section className="home-section">
-        <div className="cta-banner">
-          <div>
-            <h3 className="home-h2">Ready to explore more?</h3>
-            <p className="home-subtitle">Filter by category, save your wishlist, and compare easily.</p>
+      </section> */}
+
+        {/* Final CTA */}
+        <section className="home-section">
+          <div className="cta-banner">
+            <div>
+              <h3 className="home-h2">Ready to explore more?</h3>
+              <p className="home-subtitle">Filter by category, save your wishlist, and compare easily.</p>
+            </div>
+            <a href="/inventory" className="home-cta">Browse Inventory</a>
           </div>
-          <a href="/inventory" className="home-cta">Browse Inventory</a>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
+    </div>
+
+
   );
 }
