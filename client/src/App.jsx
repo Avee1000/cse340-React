@@ -43,6 +43,7 @@ import Home from "./pages/Home.jsx";
 import Inventory from "./pages/Inventory.jsx";
 import Vehicle from "./pages/Vehicle.jsx";
 import VehicleDetail from "./pages/Vehicle-detail.jsx"
+import { UpButtonHideShow } from "./components/minFunctions.jsx";
 import Login from "./pages/Login.jsx";
 
 export default function App() {
@@ -57,6 +58,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         {/* add other routes later */}
       </Routes>
+      <UpButtonHideShow />
       <Footer />
     </>
   );

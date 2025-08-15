@@ -1,0 +1,18 @@
+.upButton {
+    display: block;
+}
+
+.upButtonContainer {
+    background-color: black;
+    border-radius: 50px;
+    padding: .5rem;
+    bottom: 0; right: 0;
+    height: auto;
+    cursor: pointer;
+}
+
+.upButton svg {
+    height: 30px;
+    width: 30px;
+    fill: white;
+}
