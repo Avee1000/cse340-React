@@ -100,7 +100,7 @@ export default function Inventory() {
         </div>
       </div>
 
-      <hr className="d-block w-100 mx-auto my-5 border-1" />
+      <hr className="d-block w-100 mx-auto my-4 border-1" />
 
       {/* Controls row (Bootstrap forms) */}
       <div className="row g-3 mb-4">

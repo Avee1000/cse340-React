@@ -1,60 +1,59 @@
 // client/src/pages/Home.jsx
 import { useEffect, useMemo, useState } from "react";
+import api from "../api"
 import "../styles/Index.css";
 
-// Optional: set API base in .env as VITE_API_BASE_URL=http://localhost:3000
-const API = import.meta.env.VITE_API_BASE_URL || "";
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
-  const [classifications, setClassifications] = useState([]); // [{classification_id, classification_name}]
-  const [featured, setFeatured] = useState([]);               // [{inv_id, inv_year, inv_make, inv_model, inv_price, inv_thumbnail}]
-  const [latest, setLatest] = useState([]);                   // same shape as featured
-  const [err, setErr] = useState(null);
+  // const [loading, setLoading] = useState(true);
+  // const [classifications, setClassifications] = useState([]); // [{classification_id, classification_name}]
+  // const [featured, setFeatured] = useState([]);               // [{inv_id, inv_year, inv_make, inv_model, inv_price, inv_thumbnail}]
+  // const [latest, setLatest] = useState([]);                   // same shape as featured
+  // const [err, setErr] = useState(null);
 
-  useEffect(() => {
-    let ignore = false;
-    (async () => {
-      try {
-        setLoading(true);
-        setErr(null);
+  // useEffect(() => {
+  //   let ignore = false;
+  //   (async () => {
+  //     try {
+  //       setLoading(true);
+  //       setErr(null);
 
-        // Fetch everything in parallel
-        const [cRes, fRes, lRes] = await Promise.all([
-          fetch(`${API}/api/classifications`),
-          fetch(`${API}/api/inv/featured`),
-          fetch(`${API}/api/inv/latest?limit=8`),
-        ]);
+  //       // Fetch everything in parallel
+  //       const [cData, fData, lData] = await Promise.all([
+  //         fetch(`$/classifications`),
+  //         fetch(`$/api/inv/featured`),
+  //         fetch(`/api/inv/latest?limit=8`),
+  //       ]);
 
-        if (!cRes.ok || !fRes.ok || !lRes.ok) {
-          throw new Error("One or more API calls failed");
-        }
+  //       if (!cRes.ok || !fRes.ok || !lRes.ok) {
+  //         throw new Error("One or more API calls failed");
+  //       }
 
-        const [cData, fData, lData] = await Promise.all([
-          cRes.json(),
-          fRes.json(),
-          lRes.json(),
-        ]);
+  //       const [cData, fData, lData] = await Promise.all([
+  //         cRes.json(),
+  //         fRes.json(),
+  //         lRes.json(),
+  //       ]);
 
-        if (!ignore) {
-          setClassifications(Array.isArray(cData) ? cData : []);
-          setFeatured(Array.isArray(fData) ? fData : []);
-          setLatest(Array.isArray(lData) ? lData : []);
-        }
-      } catch (e) {
-        if (!ignore) setErr(e?.message || "Failed to load home data");
-      } finally {
-        if (!ignore) setLoading(false);
-      }
-    })();
-    return () => { ignore = true; };
-  }, []);
+  //       if (!ignore) {
+  //         setClassifications(Array.isArray(cData) ? cData : []);
+  //         setFeatured(Array.isArray(fData) ? fData : []);
+  //         setLatest(Array.isArray(lData) ? lData : []);
+  //       }
+  //     } catch (e) {
+  //       if (!ignore) setErr(e?.message || "Failed to load home data");
+  //     } finally {
+  //       if (!ignore) setLoading(false);
+  //     }
+  //   })();
+  //   return () => { ignore = true; };
+  // }, []);
 
-  // Small helper to format money
-  const money = useMemo(
-    () => (n) => (typeof n === "number" ? `$${n.toLocaleString()}` : ""),
-    []
-  );
+  // // Small helper to format money
+  // const money = useMemo(
+  //   () => (n) => (typeof n === "number" ? `$${n.toLocaleString()}` : ""),
+  //   []
+  // );
 
   return (
     <main className="home-wrap">
