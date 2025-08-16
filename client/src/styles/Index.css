@@ -17,6 +17,16 @@
   --home-button-border-radius: 25px;
 }
 
+body {
+    font-family: Roboto !important;
+}
+
+.app-shell {
+  min-height: 100svh;                       /* fill viewport (mobile-safe) */
+  display: flex;
+  flex-direction: column;
+}
+
 #homeHeroContainer {
   width: 100%;
   height: 100dvh;

@@ -45,21 +45,26 @@ import Vehicle from "./pages/Vehicle.jsx";
 import VehicleDetail from "./pages/Vehicle-detail.jsx"
 import { UpButtonHideShow } from "./components/minFunctions.jsx";
 import Login from "./pages/Login.jsx";
+import SignUp from "./pages/SignUp.jsx";
+import { Container } from "react-bootstrap";
+import { AuthProvider } from "./contexts/AuthContext.jsx";
 
 export default function App() {
   return (
-    <>
-      <Nav />
+    <AuthProvider>
+      <div className="app-shell">
+        <Nav />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/inv/type/:classificationId" element={<Vehicle />} />
         <Route path="/inv/detail/:invId" element={<VehicleDetail />} />
         <Route path="/login" element={<Login />} />
-        {/* add other routes later */}
+        <Route path="/register" element={<Container><SignUp /></Container>} />
       </Routes>
       <UpButtonHideShow />
       <Footer />
-    </>
+    </div>
+  </AuthProvider>
   );
 }

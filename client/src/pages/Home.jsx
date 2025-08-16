@@ -74,7 +74,7 @@ export default function Home() {
     <div id="homeContainer">
       <div id="homeHeroContainer" className="position-relative" >
         <div id="homeHeroCarouselContainer" className="w-100">
-          <Carousel className="w-100" controls={false} indicators={false} interval={4000} pause={false} >
+          <Carousel className="w-100" controls={false} indicators={false} interval={6000} pause={false} >
             {heroData.map((hero) => {
               return (
                 <Carousel.Item key={hero.id}>
@@ -94,7 +94,7 @@ export default function Home() {
               </p>
               <div className="home-cta-row d-flex gap-3 justify-content-center mt-4">
                 <a href="/inventory" className="home-cta">Browse Inventory</a>
-                <a href="/account/login" className="home-cta alt">Sign in</a>
+                <a href="/login" className="home-cta alt">Sign in</a>
               </div>
             </div>
           </section>

@@ -9,5 +9,8 @@
     "build": "pnpm --dir client build",
     "start": "pnpm --dir server start"
   },
-  "packageManager": "pnpm@10.5.2"
+  "packageManager": "pnpm@10.5.2",
+  "dependencies": {
+    "firebase": "^12.1.0"
+  }
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 // import "../styles/Vehicle.css"; 
-import Loading from "../components/loading";
+import {Loading} from "../components/Loading";
 
 export default function Vehicle() {
     const { classificationId } = useParams();

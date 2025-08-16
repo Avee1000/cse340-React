@@ -9,7 +9,7 @@
 //   );
 // }
 
-export default function Loading({text}) {
+export function Loading({text}) {
   return (
       <main className="container py-5">
         <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 240 }}>
@@ -20,4 +20,10 @@ export default function Loading({text}) {
         </div>
       </main>
     );
+}
+
+export function ButtonLoading() {
+  return (
+      <span className="spinner-border spinner-border-sm me-2" role="status" aria-label="Loading" aria-hidden="true"></span>
+  );
 }
