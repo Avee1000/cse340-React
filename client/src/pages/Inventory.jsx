@@ -76,7 +76,7 @@ export default function Inventory() {
 
   if (loading) {
     // Bootstrap spinner pattern
-    return < Loading text="Loading Inventory..." />
+    return < Loading text={null} />
   }
 
   if (error) {

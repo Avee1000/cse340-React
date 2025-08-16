@@ -69,3 +69,11 @@ input:focus {
 .muted  { color: #6b7280; font-size: 14px; }
 .mt-2   { margin-top: 8px; }
 
+.login-error.hide {
+  animation: fadeOut 3s forwards; /* 3 seconds total */
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0;  }
+}

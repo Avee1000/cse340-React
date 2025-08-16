@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Carousel from 'react-bootstrap/Carousel'
+import { useAuth } from "../contexts/AuthContext.jsx";
 import "../styles/Index.css";
 
 const API = import.meta.env.VITE_API_BASE_URL || "";
@@ -20,6 +21,7 @@ let heroData = [
 ]
 
 export default function Home() {
+  const {user} = useAuth();
   const [loading, setLoading] = useState(true);
   const [classifications, setClassifications] = useState([]);
   const [featured, setFeatured] = useState([]);
@@ -94,7 +96,7 @@ export default function Home() {
               </p>
               <div className="home-cta-row d-flex gap-3 justify-content-center mt-4">
                 <a href="/inventory" className="home-cta">Browse Inventory</a>
-                <a href="/login" className="home-cta alt">Sign in</a>
+                {!user && <a href="/login" className="home-cta alt">Sign in</a>}
               </div>
             </div>
           </section>

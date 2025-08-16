@@ -55,7 +55,7 @@ export default function App() {
       <div className="app-shell">
         <Nav />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route exact path="/" element={<Home />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/inv/type/:classificationId" element={<Vehicle />} />
         <Route path="/inv/detail/:invId" element={<VehicleDetail />} />
