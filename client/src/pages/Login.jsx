@@ -1,7 +1,7 @@
 // client/src/pages/Login.jsx
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { ButtonLoading } from "../components/Loading";
+import { ButtonLoading } from "../components/Loading.jsx";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 
@@ -31,7 +31,7 @@ export default function Login() {
     async function handleSubmit(e) {
         e.preventDefault();
         setError("");
-        
+
         try {
             setLoading(true);
             await login(form.email, form.password);
