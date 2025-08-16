@@ -1,33 +1,41 @@
-.login-wrap {
-  max-width: 400px;
-  margin: 40px auto;
-  padding: 20px 16px;
+.login-wrap, .signup-wrap {
+  height: 100vh;
+  width: 100%;
 }
 
-.login-title {
+.login-container, .signup-container {
+  width: 100%;
+  max-width: 450px;
+  padding: 3rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.login-title, .signup-title {
   font-size: 1.5rem;
   margin-bottom: 16px;
   text-align: center;
 }
 
-.login-form {
+.login-form, .signup-form {
   display: grid;
   gap: 1rem;
 }
 
-.login-form label {
+.login-form label, .signup-form label {
   display: grid;
-  gap: 4px;
+  gap: 10px;
   font-size: 0.9rem;
 }
 
-.login-form input {
+.login-form input, .signup-form input {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-.login-form button {
+.login-form button, .signup-form button {
   padding: 10px 14px;
   border-radius: var(--button-border-radius);
   border: 1px solid #111;
@@ -40,3 +48,24 @@
   color: #c00;
   margin: 0;
 }
+
+
+/* Inputs */
+input {
+  padding: 8px;
+  border: 1px solid #ccc;  /* match login */
+  border-radius: 4px;      /* match login */
+  font-size: 16px;
+  outline: none;
+  transition: box-shadow .15s ease, border-color .15s ease;
+}
+input:focus {
+  border-color: var(--accent-hover);
+  box-shadow: 0 0 0 3px rgba(0, 170, 102, 0.12);
+}
+
+/* Utility text */
+.center { text-align: center; }
+.muted  { color: #6b7280; font-size: 14px; }
+.mt-2   { margin-top: 8px; }
+

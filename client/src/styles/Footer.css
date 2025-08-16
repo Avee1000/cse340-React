@@ -1,0 +1,197 @@
+/* ===== Tokens (match your site: Roboto, soft borders, #0b7 accent) ===== */
+:root{
+  --footer-bg: #0f1111;         /* Amazon-like deep slate */
+  --footer-ink: #e6e6e6;
+  --footer-muted: #b9b9b9;
+  --footer-line: #2a2f34;
+  --accent: #0b7;
+  --accent-hover: #0a6;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --shadow: 0 6px 22px rgba(0,0,0,.12);
+}
+
+/* Use same font as your pages */
+.ft, .ft * { font-family: Roboto, system-ui, -apple-system, Segoe UI, Arial; }
+
+/* ===== Wrapper ===== */
+.ft {
+  background: linear-gradient(180deg, #121416, var(--footer-bg));
+  color: var(--footer-ink);
+  margin-top: auto;
+  border-top: 1px solid #eee; /* gentle handoff from light content above */
+}
+
+/* ===== Back to top ===== */
+.ft-top{
+  width: 100%;
+  background: #232f3e;                /* Amazon bar color */
+  color: #fff;
+  border: 0;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+.ft-top:hover{ filter: brightness(1.05); }
+
+/* ===== Mega columns ===== */
+.ft-wrap{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+  display: grid;
+  gap: 18px;
+}
+@media (min-width: 920px){
+  .ft-wrap{
+    grid-template-columns: repeat(5, auto);
+  }
+}
+
+/* Accordion behavior on mobile via <details> */
+.ft-col{
+  background: transparent;
+  border: 1px solid var(--footer-line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+@media (min-width: 920px){
+  .ft-col{
+    border: 0;
+    border-radius: 0;
+  }
+}
+
+/* Headings */
+.ft-col-heading{
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 14px;
+  font-weight: 700;
+  color: #fff;
+  position: relative;
+  user-select: none;
+  outline: none;
+}
+.ft-col-heading::-webkit-details-marker { display: none; }
+.ft-col-heading::after{
+  content: "▾";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--footer-muted);
+  transition: transform .15s ease;
+}
+.ft-col[open] > .ft-col-heading::after{ transform: translateY(-50%) rotate(180deg); }
+
+/* On desktop, keep them “open” and non-clickable */
+@media (min-width: 920px){
+  .ft-col{ display: block; }
+  .ft-col-heading{ cursor: default; padding: 6px 0 10px; }
+  .ft-col-heading::after{ content: ""; }
+}
+
+/* Links */
+.ft-list{
+  margin: 0; padding: 0 14px 14px; list-style: none;
+  display: grid; gap: 10px;
+}
+@media (min-width: 920px){ .ft-list{ padding: 0; } }
+
+.ft-list a{
+  color: var(--footer-ink);
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.35;
+  opacity: .9;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: color .15s ease, border-color .15s ease, opacity .15s ease;
+}
+.ft-list a:hover{
+  color: var(--accent);
+  border-color: rgba(11, 187, 119, .25);
+  opacity: 1;
+}
+
+/* ===== Preferences strip (brand + pills) ===== */
+.ft-prefs{
+  max-width: 1200px;
+  margin: 10px auto 0;
+  padding: 5rem 2rem;
+  border-top: 1px solid var(--footer-line);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.ft-brand{
+  font-weight: 800;
+  letter-spacing: .3px;
+  color: #fff;
+}
+
+.ft-pickers{ display: flex; gap: 10px; flex-wrap: wrap; }
+
+.ft-pill{
+  appearance: none;
+  background: transparent;
+  color: var(--footer-ink);
+  border: 1px solid var(--footer-line);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.ft-pill:hover{
+  border-color: var(--accent);
+  color: #fff;
+  background: rgba(11, 187, 119, .12);
+}
+
+/* ===== Legal row ===== */
+.ft-legal{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 16px 22px;
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid var(--footer-line);
+}
+
+@media (min-width: 720px){
+  .ft-legal{
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+}
+
+.ft-legal-links{
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.ft-legal-links a{
+  color: var(--footer-muted);
+  text-decoration: none;
+  font-size: 13px;
+}
+.ft-legal-links a:hover{ color: var(--accent); }
+
+.ft-copy{
+  color: var(--footer-muted);
+  font-size: 13px;
+  text-align: left;
+}
+
+/* ===== Small screen refinements ===== */
+@media (max-width: 600px){
+  .ft-top{ padding: 14px; }
+  .ft-col-heading{ padding: 13px 14px; }
+  .ft-list{ padding: 0 14px 12px; gap: 8px; }
+  .ft-pill{ padding: 7px 10px; }
+}
