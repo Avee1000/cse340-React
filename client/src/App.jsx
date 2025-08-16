@@ -56,7 +56,6 @@ export default function App() {
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/inventory" element={<Inventory />} />
-        <Route path="/inv/type/:classificationId" element={<Vehicle />} />
         <Route path="/inv/detail/:invId" element={<VehicleDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Container><SignUp /></Container>} />
