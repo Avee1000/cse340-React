@@ -41,7 +41,6 @@ import Nav from "./components/Nav.jsx";
 import Footer from "./components/Footer.jsx";
 import Home from "./pages/Home.jsx";
 import Inventory from "./pages/Inventory.jsx";
-import Vehicle from "./pages/Vehicle.jsx";
 import VehicleDetail from "./pages/Vehicle-detail.jsx"
 import { UpButtonHideShow } from "./components/minFunctions.jsx";
 import Login from "./pages/Login.jsx";
