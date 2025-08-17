@@ -35,7 +35,10 @@ app.get("/", (_req, res) => {
 if (process.env.NODE_ENV === "production") {
   const clientDist = path.join(__dirname, "../../client/dist");
   app.use(express.static(clientDist));
-  app.get("*", (_req, res) => res.sendFile(path.join(clientDist, "index.html")));
+  // Serve React app for non-API routes (not starting with /inv or /account or /api)
+  app.get(/^\/(?!inv|account|api).*$/, (_req, res) => {
+    res.sendFile(path.join(clientDist, "index.html"));
+  });
 }
 
 // === 404 (API style)
