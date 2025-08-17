@@ -104,9 +104,8 @@ export default function Home() {
       </div>
 
 
-      <main className="home-wrap">
+      {/* <main className="home-wrap">
 
-        {/* Quick categories (built from DB classifications) */}
         <section className="home-section">
           <div className="home-section-head">
             <h2 className="home-h2">Shop by category</h2>
@@ -131,7 +130,6 @@ export default function Home() {
           )}
         </section>
 
-        {/* Featured from DB */}
         <section className="home-section">
           <div className="home-section-head">
             <h2 className="home-h2">Featured</h2>
@@ -148,7 +146,6 @@ export default function Home() {
             <div className="home-grid">
               {featured.map((v) => (
                 <a key={v.inv_id} href={`/inventory/${v.inv_id}`} className="car-card [border-radius:14px_0_14px_0]">
-                  {/* thumbnail */}
                   {v.inv_thumbnail ? (
                     <img
                       className="car-thumb"
@@ -160,7 +157,6 @@ export default function Home() {
                     <div className="car-thumb" aria-hidden />
                   )}
 
-                  {/* body */}
                   <div className="car-card-body">
                     <div className="car-title truncate-1">
                       {v.inv_year} {v.inv_make} {v.inv_model}
@@ -175,7 +171,6 @@ export default function Home() {
           )}
         </section>
 
-        {/* Latest arrivals from DB */}
         <section className="home-section">
           <div className="home-section-head">
             <h2 className="home-h2">Latest arrivals</h2>
@@ -212,7 +207,7 @@ export default function Home() {
               ))}
             </div>
           )}
-        </section>
+        </section> */}
 
         {/* Value props / trust (static copy; data is still from DB for vehicles) */}
         {/* <section
@@ -263,7 +258,7 @@ export default function Home() {
             <a href="/inventory" className="home-cta">Browse Inventory</a>
           </div>
         </section>
-      </main>
+      {/* </main> */}
     </div>
   );
 }
