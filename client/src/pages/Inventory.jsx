@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api";
 import sort from "../util/function"
-import {Loading} from "../components/Loading.jsx";
+import {Loading} from "../components/loading.jsx";
 // You can keep your file for tiny overrides if needed
 import "../styles/Inventory.css";
 
