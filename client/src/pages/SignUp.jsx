@@ -44,7 +44,7 @@ export default function SignUp() {
     return (
         <div className="signup-wrap login-wrap container-lg d-flex justify-content-center align-items-center">
             <div className="signup-container">
-                <h2 className="signup-title">Sign Up</h2>
+                <h2 className="signup-title">Sidccccgn Up</h2>
                 {user && (<div className="alert alert-info text-center" role="alert">You are already signed in as <span className="text-danger">{user.email}</span></div>)}
                 {error && (<div className="alert alert-danger" role="alert">{error}</div>)}
                 <form className="signup-form" onSubmit={handleSubmit} noValidate>
