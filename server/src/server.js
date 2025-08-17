@@ -1,8 +1,8 @@
-
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const fs = require("fs");
 require("dotenv").config();
 
 const app = express();
@@ -18,23 +18,20 @@ const inventoryRoute = require("./routes/inventoryRoute");
 const accountRoute = require("./routes/accountRoute");
 app.use("/inv", inventoryRoute);
 app.use("/account", accountRoute);
+
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
-// --- Serve React build in production ---
-if (process.env.NODE_ENV === "production") {
-  const clientDist = path.join(__dirname, "../../client/dist");
-  app.use(express.static(clientDist));
-  // Serve React for all non-API, non-asset routes
-  app.get("*", (req, res, next) => {
-    // If request is for a static asset, skip to next
-    if (req.path.match(/\.(js|css|png|jpg|jpeg|svg|ico|json)$/)) return next();
-    res.sendFile(path.join(clientDist, "index.html"));
-  });
-}
+// --- Serve React build ---
+const clientDist = path.join(__dirname, "../client/dist"); // adjust if your structure is different
+console.log("Serving React from:", clientDist);
+console.log("index.html exists:", fs.existsSync(path.join(clientDist, "index.html")));
 
-// --- 404 handler ---
-app.use((req, res) => {
-  res.status(404).json({ error: "Not found", path: req.originalUrl });
+// Serve static assets
+app.use(express.static(clientDist));
+
+// SPA fallback: any other GET → index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(clientDist, "index.html"));
 });
 
 // --- Error handler ---
@@ -49,5 +46,4 @@ app.use((err, req, res, _next) => {
 
 // --- Boot ---
 const port = process.env.PORT || 3000;
-const host = process.env.HOST || "localhost";
-app.listen(port, () => console.log(`API listening on http://${host}:${port}`));
+app.listen(port, () => console.log(`Server listening on port ${port}`));
