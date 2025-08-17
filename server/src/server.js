@@ -28,7 +28,7 @@ app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
 // === 404 (API style)
 app.use((req, res, next) => {
-  res.status(404).json({ error: err, path: req.originalUrl });
+  res.status(404).json({ error: "Error", path: req.originalUrl });
 });
 
 // === Error handler (API style)
@@ -41,9 +41,9 @@ app.use((err, req, res, _next) => {
   });
 });
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "development") {
+  console.log("Running in development mode");
   const clientDist = path.join(__dirname, "..", "..", "client", "dist");
-  console.log(`Serving static files from ${clientDist}`);
   app.use(express.static(clientDist));
   app.get("*", (_req, res) => res.sendFile(path.join(clientDist, "index.html")));
 }
