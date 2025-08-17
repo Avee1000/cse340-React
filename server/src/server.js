@@ -25,6 +25,10 @@ app.use("/account", accountRoute);
 
 // Health checkg
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
+// Root route
+app.get("/", (_req, res) => {
+  res.json({ message: "Welcome to csecars API!" });
+});
 
 // === 404 (API style)
 app.use((req, res, next) => {
