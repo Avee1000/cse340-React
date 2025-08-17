@@ -1,3 +1,4 @@
+
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
@@ -6,47 +7,37 @@ require("dotenv").config();
 
 const app = express();
 
-// === Core middleware
+// --- Core middleware ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors());
 
-// === Dev CORS (React dev runs at 5173)
-app.use(
-  cors()
-);
-
-// === Your routes (switch to API paths)
-const inventoryRoute = require("./routes/inventoryRoute"); // update these files to send JSON
-const accountRoute = require("./routes/accountRoute");     // example if you have it
-// mount under /api/*
+// --- API routes ---
+const inventoryRoute = require("./routes/inventoryRoute");
+const accountRoute = require("./routes/accountRoute");
 app.use("/inv", inventoryRoute);
 app.use("/account", accountRoute);
-
-// Health checkg
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
-// Root route
-app.get("/", (_req, res) => {
-  res.json({ message: "Welcome to csecars API!" });
-});
 
-
-// === Serve React in production
+// --- Serve React build in production ---
 if (process.env.NODE_ENV === "production") {
   const clientDist = path.join(__dirname, "../../client/dist");
   app.use(express.static(clientDist));
-  // Serve React app for non-API routes (not starting with /inv or /account or /api)
-  app.get(/^\/(?!inv|account|api).*$/, (_req, res) => {
+  // Serve React for all non-API, non-asset routes
+  app.get("*", (req, res, next) => {
+    // If request is for a static asset, skip to next
+    if (req.path.match(/\.(js|css|png|jpg|jpeg|svg|ico|json)$/)) return next();
     res.sendFile(path.join(clientDist, "index.html"));
   });
 }
 
-// === 404 (API style)
-app.use((req, res, next) => {
+// --- 404 handler ---
+app.use((req, res) => {
   res.status(404).json({ error: "Not found", path: req.originalUrl });
 });
 
-// === Error handler (API style)
+// --- Error handler ---
 app.use((err, req, res, _next) => {
   console.error(`Error at "${req.originalUrl}":`, err.message);
   const code = err.status || 500;
@@ -55,7 +46,8 @@ app.use((err, req, res, _next) => {
     details: process.env.NODE_ENV === "development" ? err.stack : undefined,
   });
 });
-// === Boot
+
+// --- Boot ---
 const port = process.env.PORT || 3000;
 const host = process.env.HOST || "localhost";
 app.listen(port, () => console.log(`API listening on http://${host}:${port}`));
