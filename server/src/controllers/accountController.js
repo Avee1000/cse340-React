@@ -56,25 +56,35 @@ async function buildAccountManagement(req, res, next) {
 /* ****************************************
 *  Process login request
 * *************************************** */
+// async function accountLogin(req, res) {
+//   const { uid, token } = req.body;
+//   console.log("Received UID:", uid, token);
+//   try {
+//     const decoded = await admin.auth().verifyIdToken(token);
+//     if (decoded.uid !== uid) {
+//       return res.status(401).json({ error: "UID mismatch" });
+//     }
+//     // Find user in your database by UID
+//     const user = await accountModel.getAccountByFirebaseId(uid);
+//     if (!user) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+//     res.json(user);
+//   } catch (error) {
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// }
+
 async function accountLogin(req, res) {
-  const { uid, token } = req.body;
-  console.log("Received UID:", uid, token);
   try {
-    const decoded = await admin.auth().verifyIdToken(token);
-    if (decoded.uid !== uid) {
-      return res.status(401).json({ error: "UID mismatch" });
-    }
-    // Find user in your database by UID
+    const { uid } = req.body;
     const user = await accountModel.getAccountByFirebaseId(uid);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
     res.json(user);
+    console.log(user)
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 }
-
 
 async function logOut(req, res) {
 
