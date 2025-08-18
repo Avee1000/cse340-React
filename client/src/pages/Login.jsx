@@ -38,10 +38,11 @@ export default function Login() {
 
             const userCred = await login(form.email, form.password);
             const uid = userCred.user.uid;
+            const token = await userCred.user.getIdToken();
 
             await axios.post(`/api/auth/login`, {
               firebase_uid: uid,
-              account_email: form.email,
+              token: token,
             });
 
             setForm({ email: "", password: "" });

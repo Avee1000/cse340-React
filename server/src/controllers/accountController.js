@@ -2,19 +2,8 @@ const utilities = require("../utilities/");
 const accountModel = require("../models/account-model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const admin = require("../firebase");
 require("dotenv").config();
-
-/* ****************************************
-*  Deliver login view
-* *************************************** */
-async function buildLogin(req, res, next) {
-    let nav = await utilities.getNav()
-    res.render("account/login", {
-        title: "Login",
-        nav,
-        errors: null
-    })
-}
 
 
 /* ****************************************
@@ -68,12 +57,19 @@ async function buildAccountManagement(req, res, next) {
 *  Process login request
 * *************************************** */
 async function accountLogin(req, res) {
+  const { uid, token } = req.body;
+  console.log("Received UID:", uid, token);
   try {
-    const { uid } = req.body;
-    console.log("Received UID:", uid);
-    const account = await accountModel.getAccountByFirebaseId(uid)
-    res.json(account);
-    console.log("Account login successful:", account);
+    const decoded = await admin.auth().verifyIdToken(token);
+    if (decoded.uid !== uid) {
+      return res.status(401).json({ error: "UID mismatch" });
+    }
+    // Find user in your database by UID
+    const user = await accountModel.getAccountByFirebaseId(uid);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(user);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
@@ -205,7 +201,6 @@ async function updatePassword(req, res) {
 
 
 module.exports = {
-  buildLogin,
   processRegisterAccount,
   accountLogin,
   buildAccountManagement,
