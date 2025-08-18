@@ -12,7 +12,6 @@ node_modules
 # will be manually created by you or dynamically # created on the hosting server
 .env
 
-server/src/serviceAccountKey.json
 
 # .DS_Store is only for Mac users
 **/.DS_Store
