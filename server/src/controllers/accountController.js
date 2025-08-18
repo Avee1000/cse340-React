@@ -16,71 +16,23 @@ async function buildLogin(req, res, next) {
     })
 }
 
-/* ****************************************
-*  Deliver registration view
-* *************************************** */
-async function buildRegister(req, res, next) {
-    let nav = await utilities.getNav()
-    res.render("account/register", {
-        title: "Register",
-        nav,
-        errors: null
-    })
-}
-
 
 /* ****************************************
 *  Process Registration
 * *************************************** */
-async function buildRegisterAccount(req, res) {
-  let nav = await utilities.getNav()
-  const {
-    account_firstname,
-    account_lastname,
-    account_email,
-    account_password
-  } = req.body
-
-  
-  let hashedPassword
+async function processRegisterAccount(req, res) {
   try {
-    // regular password and cost (salt is generated automatically)
-    hashedPassword = await bcrypt.hashSync(account_password, 10)
-  } catch (error) {
-    req.flash("error", 'Sorry, there was an error processing the registration.')
-    res.status(500).render("account/register", {
-      title: "Registration",
-      nav,
-      errors: null,
-    })
+      const {
+        account_firstname,
+        account_lastname,
+        account_email,
+        firebase_uid
+    } = req.body
+    await accountModel.registerAccount(account_firstname, account_lastname, account_email, firebase_uid)
+    res.status(201).json({ success: true });
   }
-
-
-  const regResult = await accountModel.registerAccount(
-    account_firstname,
-    account_lastname,
-    account_email,
-    hashedPassword
-  )
-
-  
-  if (regResult) {
-    req.flash(
-      "success",
-      `Congratulations, you\'ve registered ${account_firstname}. Please log in.`
-    )
-    let nav = await utilities.getNav()
-    res.status(201).render("./account/login", {
-      title: "Login",
-      nav,
-      errors: null,
-    })
-  } else {
-    req.flash("error", "Sorry, the registration failed.")
-    res.status(501).render("./account/register", {
-      title: "Registration",
-      nav,
-    })
+  catch (error) {
+    res.status(500).json({ error: "Database insert failed" });
   }
 }
 
@@ -116,41 +68,14 @@ async function buildAccountManagement(req, res, next) {
 *  Process login request
 * *************************************** */
 async function accountLogin(req, res) {
-  let nav = await utilities.getNav()
-  const { account_email, account_password } = req.body
-  const accountData = await accountModel.getAccountByEmail(account_email)
-  if (!accountData) {
-    req.flash("error", "Please check your credentials and try again.")
-    res.status(400).render("account/login", {
-      title: "Login",
-      nav,
-      errors: null,
-      account_email,
-    })
-    return
-  }
   try {
-    if (await bcrypt.compare(account_password, accountData.account_password)) {
-      delete accountData.account_password
-      const accessToken = jwt.sign(accountData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 * 1000 })
-      if(process.env.NODE_ENV === 'development') {
-        res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 })
-      } else {
-        res.cookie("jwt", accessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 })
-      }
-      return res.redirect("/account/")
-    }
-    else {
-      req.flash("error", "Please check your credentials and try again.")
-      res.status(400).render("account/login", {
-        title: "Login",
-        nav,
-        errors: null,
-        account_email,
-      })
-    }
+    const { uid } = req.body;
+    console.log("Received UID:", uid);
+    const account = await accountModel.getAccountByFirebaseId(uid)
+    res.json(account);
+    console.log("Account login successful:", account);
   } catch (error) {
-    throw new Error('Access Forbidden')
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -281,8 +206,7 @@ async function updatePassword(req, res) {
 
 module.exports = {
   buildLogin,
-  buildRegister,
-  buildRegisterAccount,
+  processRegisterAccount,
   accountLogin,
   buildAccountManagement,
   logOut,

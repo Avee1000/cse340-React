@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { ButtonLoading } from "../components/loading.jsx";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
+import axios from "axios";
 
 export default function Login() {
     const { login } = useAuth();
@@ -34,7 +35,16 @@ export default function Login() {
 
         try {
             setLoading(true);
-            await login(form.email, form.password);
+
+            const userCred = await login(form.email, form.password);
+            const uid = userCred.user.uid;
+
+            const API = import.meta.env.VITE_API_URL;
+            await axios.post(`${API}/api/auth/login`, {
+              firebase_uid: uid,
+              account_email: form.email,
+            });
+
             setForm({ email: "", password: "" });
             navigate("/");
         } catch (err) {

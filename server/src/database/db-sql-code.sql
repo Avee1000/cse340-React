@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS public.account
     account_lastname character varying NOT NULL,
     account_email character varying NOT NULL,
     account_password character varying NOT NULL,
+    firebase_uid VARCHAR(128) UNIQUE, -- 🔹 New column
     account_type account_type NOT NULL DEFAULT 'Client'::account_type,
     CONSTRAINT account_pkey PRIMARY KEY (account_id)
 );

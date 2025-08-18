@@ -1,9 +1,15 @@
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { getAuth, signOut } from "firebase/auth";
+import axios from "axios";
+import { ButtonLoading } from "./loading";
+import { use } from "react";
 
 export default function Nav() {
   const {user} = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
   const auth = getAuth();
     async function handleLogout() {
@@ -15,7 +21,34 @@ export default function Nav() {
     }
   }
 
-  console.log("Nav user:", user);
+  useEffect(() => {
+    if (!user) {
+      setLoading(true);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        try {
+          const API = import.meta.env.VITE_API_URL;
+          setLoading(true);
+          // Send POST request with Firebase UID
+          const response = await axios.post(`${API}/api/auth/login`, {
+            uid: user.uid,
+          });
+          setUserData(response.data);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchUserData();
+  }, [user]);
+
+
   return (
     <header style={styles.header}>
       <div style={styles.brand}><Link to="/" style={styles.brandLink}>CSE340 Garage</Link></div>
@@ -24,7 +57,7 @@ export default function Nav() {
           <Link to="/" style={styles.link}>Home</Link>
           <Link to="/inventory" prefetch="intent" style={styles.link}>Inventory</Link>
         {user ? (<div className="" style={styles.link}>
-          <div className="btn btn-secondary dropdown-toggle dropdown-toggle-split d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">{user.email}</div>
+          <div className="btn btn-secondary dropdown-toggle dropdown-toggle-split d-flex align-items-center gap-2 fs-6 rounded-1" data-bs-toggle="dropdown" aria-expanded="false">{loading ? <ButtonLoading  /> : userData?.account_firstname}</div>
           <ul className="dropdown-menu dropdown-menu-end">
             <li><Link className="dropdown-item" to="/account">Account</Link></li>
             <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>

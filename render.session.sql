@@ -2,7 +2,7 @@ delete from classification where classification_name = 'Boats'
 
 select * from classification
 
-delete from wishlist
+delete from account
 
 select * from account
 
@@ -27,3 +27,6 @@ SELECT * FROM public.inventory AS i
        JOIN public.classification AS c 
        ON i.classification_id = c.classification_id 
        WHERE c.classification_id = 2
+
+ALTER TABLE public.account 
+DROP COLUMN account_password;

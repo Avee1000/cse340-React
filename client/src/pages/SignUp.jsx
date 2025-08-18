@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { ButtonLoading } from "../components/loading.jsx";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 // import "../styles/Login.css"
 
 export default function SignUp() {
     const { signup, user } = useAuth();
+    const [success, setSuccess] = useState("");
     const navigate = useNavigate();
     const [form, setForm] = useState({
+        first_name: "",
+        last_name: "",
         email: "",
         password: "",
         confirmPassword: "",
@@ -30,9 +34,20 @@ export default function SignUp() {
 
         try {
             setLoading(true);
-            await signup(form.email, form.password);
-            setForm({ email: "", password: "", confirmPassword: "" });
-            navigate("/login");
+            const API_URL = import.meta.env.VITE_API_URL;
+            const cred = await signup(form.email, form.password);
+            const uid = cred.user.uid;
+
+            await axios.post(`${API_URL}/api/users`, {
+                firebase_uid: uid, // 🔹 Send the Firebase UID
+                account_email: form.email,
+                account_firstname: form.first_name,
+                account_lastname: form.last_name,
+            });
+            setSuccess("Account created successfully!");
+            setTimeout(() => navigate("/login"), 2000);
+
+            setForm({ email: "", password: "", confirmPassword: "", first_name: "", last_name: "" });
         } catch (err) {
             // console.error("Signup error:", err);
             setError(err?.message || "Failed to create an account");
@@ -42,12 +57,39 @@ export default function SignUp() {
     }
 
     return (
-        <div className="signup-wrap login-wrap container-lg d-flex justify-content-center align-items-center">
+        <div className="overflow-hidden position-relative signup-wrap login-wrap container-lg d-flex flex-column justify-content-center align-items-center">
+            <div className="signup-error position-relative">
+                {error && (<div className="alert alert-danger" role="alert">{error}</div>)}
+                {success && (<div className="alert alert-success" role="alert">{success}</div>)}
+            </div>
             <div className="signup-container">
                 <h2 className="signup-title">Sign Up</h2>
                 {user && (<div className="alert alert-info text-center" role="alert">You are already signed in as <span className="text-danger">{user.email}</span></div>)}
-                {error && (<div className="alert alert-danger" role="alert">{error}</div>)}
                 <form className="signup-form" onSubmit={handleSubmit} noValidate>
+                    <label htmlFor="first_name">First Name</label>
+                    <input
+                        type="text"
+                        id="first_name"
+                        name="first_name"
+                        placeholder="John"
+                        required
+                        value={form.first_name}
+                        onChange={onChange}
+                        disabled={user}
+                    />
+
+                    <label htmlFor="last_name">Last Name</label>
+                    <input
+                        type="text"
+                        id="last_name"
+                        name="last_name"
+                        placeholder="Doe"
+                        required
+                        value={form.last_name}
+                        onChange={onChange}
+                        disabled={user}
+                    />
+
                     <label htmlFor="email">Email</label>
                     <input
                         className="input"

@@ -23,40 +23,12 @@ let heroData = [
 export default function Home() {
   const {user} = useAuth();
   const [loading, setLoading] = useState(true);
-  const [classifications, setClassifications] = useState([]);
-  const [featured, setFeatured] = useState([]);
-  const [latest, setLatest] = useState([]);
-  const [err, setErr] = useState(null);
 
   useEffect(() => {
     let ignore = false;
     (async () => {
       try {
         setLoading(true);
-        setErr(null);
-
-        // Fetch everything in parallel
-        const [cRes, fRes, lRes] = await Promise.all([
-          fetch(`${API}/api/classifications`),
-          fetch(`${API}/api/inv/featured`),
-          fetch(`${API}/api/inv/latest?limit=8`),
-        ]);
-
-        if (!cRes.ok || !fRes.ok || !lRes.ok) {
-          throw new Error("One or more API calls failed");
-        }
-
-        const [cData, fData, lData] = await Promise.all([
-          cRes.json(),
-          fRes.json(),
-          lRes.json(),
-        ]);
-
-        if (!ignore) {
-          setClassifications(Array.isArray(cData) ? cData : []);
-          setFeatured(Array.isArray(fData) ? fData : []);
-          setLatest(Array.isArray(lData) ? lData : []);
-        }
       } catch (e) {
         if (!ignore) setErr(e?.message || "Failed to load home data");
       } finally {
@@ -96,7 +68,7 @@ export default function Home() {
               </p>
               <div className="home-cta-row d-flex gap-3 justify-content-center mt-4">
                 <a href="/inventory" className="home-cta">Browse Inventory</a>
-                {!user && <a href="/login" className="home-cta alt">Sign in</a>}
+                {!user && <a href="/register" className="home-cta alt">Sign up</a>}
               </div>
             </div>
           </section>

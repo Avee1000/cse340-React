@@ -17,7 +17,7 @@ app.use(cors());
 const inventoryRoute = require("./routes/inventoryRoute");
 const accountRoute = require("./routes/accountRoute");
 app.use("/api/inv", inventoryRoute);
-app.use("/api/account", accountRoute);
+app.use("/api", accountRoute);
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
