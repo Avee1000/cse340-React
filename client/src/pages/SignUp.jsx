@@ -34,11 +34,10 @@ export default function SignUp() {
 
         try {
             setLoading(true);
-            const API_URL = import.meta.env.VITE_API_URL;
             const cred = await signup(form.email, form.password);
             const uid = cred.user.uid;
 
-            await axios.post(`${API_URL}/api/users`, {
+            await axios.post(`/api/users`, {
                 firebase_uid: uid, // 🔹 Send the Firebase UID
                 account_email: form.email,
                 account_firstname: form.first_name,
