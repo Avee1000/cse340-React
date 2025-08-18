@@ -15,13 +15,12 @@ export default function Inventory() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const API = import.meta.env.VITE_API_URL || "http://localhost:5500";
 
   useEffect(() => {
     (async () => {
       try {
-        const url = `${API}/inv/allinventory`;
-        const url2 = `${API}/inv`;
+        const url = `/api/inv/allinventory`;
+        const url2 = `/api/inv`;
 
         const [itemsRes, classesRes] = await Promise.all([
           api.get(url),

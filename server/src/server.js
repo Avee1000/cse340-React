@@ -16,13 +16,13 @@ app.use(cors());
 // --- API routes ---
 const inventoryRoute = require("./routes/inventoryRoute");
 const accountRoute = require("./routes/accountRoute");
-app.use("/inv", inventoryRoute);
-app.use("/account", accountRoute);
+app.use("/api/inv", inventoryRoute);
+app.use("/api/account", accountRoute);
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
 // --- Serve React build ---
-const clientDist = path.join(__dirname, "../client/dist"); // adjust if your structure is different
+const clientDist = path.join(__dirname, "../../client/dist"); // adjust if your structure is different
 console.log("Serving React from:", clientDist);
 console.log("index.html exists:", fs.existsSync(path.join(clientDist, "index.html")));
 

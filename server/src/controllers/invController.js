@@ -4,8 +4,13 @@ const utilities = require("../utilities/")
 const invCont = {}
 
 invCont.getAllInventory = async function (req, res, next) {
-  const inventory = await invModel.getAllInventory()
-  res.json(inventory.rows)
+  try {
+    const inventory = await invModel.getAllInventory()
+    res.json(inventory.rows)
+  } catch (error) {
+    console.error("Error fetching all inventory:", error)
+    res.status(500).json({ error: "Internal server error" })
+  }
 }
 invCont.getClassifications = async function (req, res, next) {
   const classifications = await invModel.getClassifications()
