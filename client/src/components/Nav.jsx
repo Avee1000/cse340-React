@@ -31,10 +31,9 @@ export default function Nav() {
     const fetchUserData = async () => {
       if (user) {
         try {
-          const API = import.meta.env.VITE_API_URL;
           setLoading(true);
           // Send POST request with Firebase UID
-          const response = await axios.post(`${API}/api/auth/login`, {
+          const response = await axios.post(`/api/auth/login`, {
             uid: user.uid,
           });
           setUserData(response.data);

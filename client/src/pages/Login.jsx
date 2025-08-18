@@ -39,8 +39,7 @@ export default function Login() {
             const userCred = await login(form.email, form.password);
             const uid = userCred.user.uid;
 
-            const API = import.meta.env.VITE_API_URL;
-            await axios.post(`${API}/api/auth/login`, {
+            await axios.post(`/api/auth/login`, {
               firebase_uid: uid,
               account_email: form.email,
             });
