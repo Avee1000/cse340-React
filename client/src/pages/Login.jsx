@@ -4,10 +4,10 @@ import { useAuth } from "../contexts/AuthContext";
 import { ButtonLoading } from "../components/loading.jsx";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
-import axios from "axios";
-
+import api from "../api.js"; // Adjust the import path as necessary
 export default function Login() {
     const { login } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     const [form, setForm] = useState({
@@ -19,7 +19,7 @@ export default function Login() {
 
   React.useEffect(() => {
     if (!error) return;
-    const timer = setTimeout(() => setError(""), 2000);
+    const timer = setTimeout(() => setError(""), 4000);
     return () => clearTimeout(timer);
   }, [error]);
 
@@ -40,7 +40,7 @@ export default function Login() {
             const uid = userCred.user.uid;
             const token = await userCred.user.getIdToken();
 
-            await axios.post(`/api/auth/login`, {
+            await api.post(`/api/auth/login`, {
               firebase_uid: uid,
               token: token,
             });
@@ -55,11 +55,20 @@ export default function Login() {
         }
     }
 
-  return (
-    <main className="login-wrap container-lg d-flex justify-content-center align-items-center">
+return (
+  <main className="login-wrap container-lg d-flex justify-content-center align-items-center">
+    {user ? (
+      <div className="alert alert-success">
+        You are logged in!
+      </div>
+    ) : (
       <div className="login-container">
         <h1 className="login-title">Sign in</h1>
-          {error && <p className={`login-error alert alert-danger ${error ? "hide" : ""}`}>{error}</p>}
+        {error && (
+          <p className={`login-error alert alert-danger`}>
+            {error}
+          </p>
+        )}
         <form className="login-form" onSubmit={handleSubmit}>
           <label htmlFor="email">Email</label>
           <input
@@ -82,19 +91,26 @@ export default function Login() {
             type="password"
             required
             minLength={6}
-            // pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{12,}$"
-            title="Password must be at least 12 characters, contain 1 capital letter, 1 number, and 1 special character"
             placeholder="••••••••••••"
             value={form.password}
             onChange={onChange}
           />
-          <button className="rounded-pill bg-dark text-white" type="submit" disabled={loading}>
-            {loading ? <ButtonLoading  /> : "Sign in"}
+
+          <button
+            className="rounded-pill bg-dark text-white"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? <ButtonLoading /> : "Sign in"}
           </button>
         </form>
 
-        <p className="login-register-prompt text-center m-0" style={{ fontSize: "14px", color: "#6b7280" }}>Don't have an account? <a href="/register" className="text-decoration-none">Signup Here</a></p>
+        <p className="login-register-prompt text-center m-0" style={{ fontSize: "14px", color: "#6b7280" }}>
+          Don't have an account? <a href="/register" className="text-decoration-none">Signup Here</a>
+        </p>
       </div>
-    </main>
-  );
+    )}
+  </main>
+);
+
 }

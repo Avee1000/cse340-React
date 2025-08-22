@@ -3,7 +3,6 @@ import Carousel from 'react-bootstrap/Carousel'
 import { useAuth } from "../contexts/AuthContext.jsx";
 import "../styles/Index.css";
 
-const API = import.meta.env.VITE_API_BASE_URL || "";
 
 let heroData = [
   {

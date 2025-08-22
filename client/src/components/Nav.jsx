@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { getAuth, signOut } from "firebase/auth";
-import axios from "axios";
+import api from "../api"
 import { ButtonLoading } from "./loading";
 import { use } from "react";
 
 export default function Nav() {
   const {user} = useAuth();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
   const auth = getAuth();
@@ -32,15 +34,22 @@ export default function Nav() {
       if (user) {
         try {
           setLoading(true);
+
+          const  token =  await user.getIdToken();
           // Send POST request with Firebase UID
-          const response = await axios.post(`/api/auth/login`, {
+          const response = await api.post(`/api/auth/login`, {
             uid: user.uid,
+            token: token,
           });
-          setUserData(response.data);
+          const firstname = response.data.account_firstname[0].toUpperCase() + response.data.account_lastname[0].toUpperCase();
+          setUserData(firstname);
         } catch (error) {
           console.error("Error fetching user data:", error);
+          setError("Error fetching user data");
+          setUserData("??")
         } finally {
           setLoading(false);
+          setError(null)
         }
       }
     };
@@ -55,14 +64,22 @@ export default function Nav() {
         <div className="d-flex gap-3 align-items-center">
           <Link to="/" style={styles.link}>Home</Link>
           <Link to="/inventory" prefetch="intent" style={styles.link}>Inventory</Link>
+          {/* if the user is logged in */}
         {user ? (<div className="" style={styles.link}>
-          <div className="btn btn-secondary dropdown-toggle dropdown-toggle-split d-flex align-items-center gap-2 fs-6 rounded-1" data-bs-toggle="dropdown" aria-expanded="false">{loading ? <ButtonLoading  /> : userData?.account_firstname}</div>
+          <div className="border border-black dropdown-toggle-split d-flex align-items-center gap-2 fs-6 rounded-circle py-1" data-bs-toggle="dropdown" aria-expanded="false">{userData}</div>
           <ul className="dropdown-menu dropdown-menu-end">
+                {error && (
+                  <li className="dropdown-item text-danger small">
+                    {error}
+                  </li>
+                )}
             <li><Link className="dropdown-item" to="/account">Account</Link></li>
             <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
           </ul>
         </div>
-        ) : (<Link to="/login" style={styles.link}>Login</Link>)}
+        ) : (location.pathname !== "/login" && (
+              <Link to="/login" style={styles.link}>Login</Link>)
+            )}
         </div>
       </nav>
     </header>

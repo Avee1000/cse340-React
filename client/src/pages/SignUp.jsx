@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { ButtonLoading } from "../components/loading.jsx";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-// import "../styles/Login.css"
+import api from "../api.js";
 
 export default function SignUp() {
     const { signup, user } = useAuth();
@@ -37,7 +36,7 @@ export default function SignUp() {
             const cred = await signup(form.email, form.password);
             const uid = cred.user.uid;
 
-            await axios.post(`/api/users`, {
+            await api.post(`/api/users`, {
                 firebase_uid: uid, // 🔹 Send the Firebase UID
                 account_email: form.email,
                 account_firstname: form.first_name,
