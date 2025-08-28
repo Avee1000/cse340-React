@@ -59,14 +59,14 @@ export default function Nav() {
 
   return (
     <header style={styles.header}>
-      <div style={styles.brand}><Link to="/" style={styles.brandLink}>CSE340 Garage</Link></div>
+      <div style={styles.brand}><Link to="/" style={styles.brandLink}>CSE340 Garage for Jessica</Link></div>
       <nav style={styles.nav}>
         <div className="d-flex gap-3 align-items-center">
           <Link to="/" style={styles.link}>Home</Link>
           <Link to="/inventory" prefetch="intent" style={styles.link}>Inventory</Link>
           {/* if the user is logged in */}
         {user ? (<div className="" style={styles.link}>
-          <div className="border border-black dropdown-toggle-split d-flex align-items-center gap-2 fs-6 rounded-circle py-1" data-bs-toggle="dropdown" aria-expanded="false">{userData}</div>
+          <div   className="border border-black dropdown-toggle-split d-flex align-items-center justify-content-center gap-2 fs-6 rounded-circle"  style={{ width: "35px", height: "35px" }} data-bs-toggle="dropdown" aria-expanded="false">{userData}</div>
           <ul className="dropdown-menu dropdown-menu-end">
                 {error && (
                   <li className="dropdown-item text-danger small">
