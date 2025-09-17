@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Carousel from 'react-bootstrap/Carousel'
 import { useAuth } from "../contexts/AuthContext.jsx";
+import Starfield from "../components/Starfield.jsx";
 import "../styles/Index.css";
 
 

@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { ButtonLoading } from "../components/loading.jsx";
 import { useNavigate } from "react-router-dom";
+import Starfield from "../components/Starfield.jsx";
+
 import "../styles/Login.css";
 import api from "../api.js"; // Adjust the import path as necessary
 export default function Login() {
@@ -57,6 +59,8 @@ export default function Login() {
 
 return (
   <main className="login-wrap container-lg d-flex justify-content-center align-items-center">
+          <Starfield />
+    
     {user ? (
       <div className="alert alert-success">
         You are logged in!
